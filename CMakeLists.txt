@@ -41,6 +41,7 @@ if(UNIX)
     endif()
 elseif(WIN32)
     add_definitions(-DWIN32)
+	add_definitions(-DIMPLEMENT_CLS_API)
     SET(PROJECT_LIBS Ws2_32.lib)
     if(MINGW)
         # Special MINGW stuff here

@@ -84,6 +84,23 @@
 #include "Host.h"
 #include "StatTimer.h"
 
+#ifdef _WIN32
+	#ifdef IMPLEMENT_CLS_API
+		#define CLS_API(type) extern "C"   __declspec(dllexport) type __cdecl
+		#define CLS_API_CPP(type)	__declspec(dllexport) type __cdecl
+		#define CLS_API_CLASS(type)        __declspec(dllexport) type
+	#else
+		#define CLS_API(type) extern "C"  __declspec(dllimport) type __cdecl
+		#define CLS_API_CPP(type)	__declspec(dllimport) type __cdecl
+		#define CLS_API_CLASS(type)   __declspec(dllimport) type
+	#endif
+#else
+	#define CLS_API(type) extern "C" type
+	#define CLS_API_CPP(type)   type
+	#define CLS_API_CLASS(type)   type
+#endif // _WIN32
+
+
 //-----------------------------------------------------------------------------
 // General class macro definitions and typedefs
 //-----------------------------------------------------------------------------
@@ -99,7 +116,7 @@
 /// - Socket types
 ///  -# CActiveSocket Class
 ///  -# CPassiveSocket Class
-class CSimpleSocket {
+CLS_API_CLASS(class) CSimpleSocket {
 public:
     /// Defines the three possible states for shuting down a socket.
     typedef enum
@@ -145,8 +162,8 @@ public:
     } CSocketError;
 
 public:
-    CSimpleSocket(CSocketType type = SocketTypeTcp);
-    CSimpleSocket(CSimpleSocket &socket);
+	CLS_API_CLASS(CSimpleSocket)(CSocketType type = SocketTypeTcp);
+	CLS_API_CLASS(CSimpleSocket)(CSimpleSocket &socket);
 
     virtual ~CSimpleSocket()
     {
@@ -161,11 +178,11 @@ public:
     /// object can be used. Errors : CSocket::SocketProtocolError,
     /// CSocket::SocketInvalidSocket,
     /// @return true if properly initialized.
-    virtual bool Initialize(void);
+    virtual CLS_API_CPP(bool) Initialize(void);
 
     /// Close socket
     /// @return true if successfully closed otherwise returns false.
-    virtual bool Close(void);
+    virtual CLS_API_CPP(bool) Close(void);
 
     /// Shutdown shut down socket send and receive operations
     ///    CShutdownMode::Receives - Disables further receive operations.
@@ -173,7 +190,7 @@ public:
     ///    CShutdownBoth::         - Disables further send and receive operations.
     /// @param nShutdown specifies the type of shutdown.
     /// @return true if successfully shutdown otherwise returns false.
-    virtual bool Shutdown(CShutdownMode nShutdown);
+    virtual CLS_API_CPP(bool) Shutdown(CShutdownMode nShutdown);
 
     /// Examine the socket descriptor sets currently owned by the instance of
     /// the socket class (the readfds, writefds, and errorfds parameters) to
@@ -192,7 +209,7 @@ public:
     /// @param nTimeoutSec timeout in seconds for select.
     /// @param nTimeoutUSec timeout in micro seconds for select.
     /// @return true if socket has data ready, or false if not ready or timed out.
-    virtual bool Select(int32 nTimeoutSec, int32 nTimeoutUSec);
+    virtual CLS_API_CPP(bool) Select(int32 nTimeoutSec, int32 nTimeoutUSec);
 
     /// Does the current instance of the socket object contain a valid socket
     /// descriptor.
@@ -204,7 +221,7 @@ public:
     /// Provides a standard error code for cross platform development by
     /// mapping the operating system error to an error defined by the CSocket
     /// class.
-    void TranslateSocketError(void);
+	CLS_API_CPP(void) TranslateSocketError(void);
 
     /// Returns a human-readable description of the given error code
     /// or the last error code of a socket
@@ -221,7 +238,7 @@ public:
     /// @return number of bytes actually received.
     /// @return of zero means the connection has been shutdown on the other side.
     /// @return of -1 means that an error has occurred.
-    virtual int32 Receive(int32 nMaxBytes = 1, uint8 * pBuffer = 0);
+    virtual CLS_API_CPP(int32) Receive(int32 nMaxBytes = 1, uint8 * pBuffer = 0);
 
     /// Attempts to send a block of data on an established connection.
     /// @param pBuf block of data to be sent.
@@ -229,7 +246,7 @@ public:
     /// @return number of bytes actually sent.
     /// @return of zero means the connection has been shutdown on the other side.
     /// @return of -1 means that an error has occurred.
-    virtual int32 Send(const uint8 *pBuf, size_t bytesToSend);
+    virtual CLS_API_CPP(int32) Send(const uint8 *pBuf, size_t bytesToSend);
 
     /// Attempts to send at most nNumItem blocks described by sendVector
     /// to the socket descriptor associated with the socket object.
@@ -239,7 +256,7 @@ public:
     /// @return number of bytes actually sent, return of zero means the
     /// connection has been shutdown on the other side, and a return of -1
     /// means that an error has occurred.
-    virtual int32 Send(const struct iovec *sendVector, int32 nNumItems);
+    virtual CLS_API_CPP(int32) Send(const struct iovec *sendVector, int32 nNumItems);
 
     /// Copies data between one file descriptor and another.
     /// On some systems this copying is done within the kernel, and thus is
@@ -253,7 +270,7 @@ public:
     /// @param pOffset from which to start reading data from input file.
     /// @param nCount number of bytes to copy between file descriptors.
     /// @return number of bytes written to the out socket descriptor.
-    virtual int32 SendFile(int32 nOutFd, int32 nInFd, off_t *pOffset, int32 nCount);
+    virtual CLS_API_CPP(int32) SendFile(int32 nOutFd, int32 nInFd, off_t *pOffset, int32 nCount);
 
     /// Returns blocking/non-blocking state of socket.
     /// @return true if the socket is non-blocking, else return false.
@@ -263,11 +280,11 @@ public:
 
     /// Set the socket to blocking.
     /// @return true if successful set to blocking, else return false;
-    bool SetBlocking(void);
+	CLS_API_CPP(bool) SetBlocking(void);
 
     /// Set the socket as non-blocking.
     /// @return true if successful set to non-blocking, else return false;
-    bool SetNonblocking(void);
+	CLS_API_CPP(bool) SetNonblocking(void);
 
     /// Get a pointer to internal receive buffer.  The user MUST not free this
     /// pointer when finished.  This memory is managed internally by the CSocket
@@ -306,13 +323,13 @@ public:
     /// @param bEnable true to enable option false to disable option.
     /// @param nTime time in seconds to linger.
     /// @return true if option successfully set
-    bool SetOptionLinger(bool bEnable, uint16 nTime);
+	CLS_API_CPP(bool) SetOptionLinger(bool bEnable, uint16 nTime);
 
     /// Tells the kernel that even if this port is busy (in the TIME_WAIT state),
     /// go ahead and reuse it anyway.  If it is busy, but with another state,
     /// you will still get an address already in use error.
     /// @return true if option successfully set
-    bool SetOptionReuseAddr();
+	CLS_API_CPP(bool) SetOptionReuseAddr();
 
     /// Gets the timeout value that specifies the maximum number of seconds a
     /// call to CSimpleSocket::Open waits until it completes.
@@ -368,14 +385,14 @@ public:
     ///  @param nRecvTimeoutSec of timeout in seconds.
     ///  @param nRecvTimeoutUsec of timeout in microseconds.
     ///  @return true if socket timeout was successfully set.
-    bool SetReceiveTimeout(int32 nRecvTimeoutSec, int32 nRecvTimeoutUsec = 0);
+	CLS_API_CPP(bool) SetReceiveTimeout(int32 nRecvTimeoutSec, int32 nRecvTimeoutUsec = 0);
 
     /// Enable/disable multicast for a socket.  This options is only valid for
     /// socket descriptors of type CSimpleSocket::SocketTypeUdp.
     /// @return true if multicast was enabled or false if socket type is not
     /// CSimpleSocket::SocketTypeUdp and the error will be set to
     /// CSimpleSocket::SocketProtocolError
-    bool SetMulticast(bool bEnable, uint8 multicastTTL = 1);
+	CLS_API_CPP(bool) SetMulticast(bool bEnable, uint8 multicastTTL = 1);
 
     /// Return true if socket is multicast or false is socket is unicast
     /// @return true if multicast is enabled
@@ -385,7 +402,7 @@ public:
 
     /// Bind socket to a specific interface when using multicast.
     /// @return true if successfully bound to interface
-    bool BindInterface(const char *pInterface);
+	CLS_API_CPP(bool) BindInterface(const char *pInterface);
 
     /// Gets the timeout value that specifies the maximum number of seconds a
     /// a call to CSimpleSocket::Send waits until it completes.
@@ -404,7 +421,7 @@ public:
     /// Gets the timeout value that specifies the maximum amount of time a call
     /// to CSimpleSocket::Send waits until it completes.
     /// @return the length of time in seconds
-    bool SetSendTimeout(int32 nSendTimeoutSec, int32 nSendTimeoutUsec = 0);
+	CLS_API_CPP(bool) SetSendTimeout(int32 nSendTimeoutSec, int32 nSendTimeoutUsec = 0);
 
     /// Returns the last error that occured for the instace of the CSimpleSocket
     /// instance.  This method should be called immediately to retrieve the
@@ -429,13 +446,13 @@ public:
     /// Return Differentiated Services Code Point (DSCP) value currently set on the socket object.
     /// @return DSCP for current socket object.
     /// <br><br> \b NOTE: Windows special notes http://support.microsoft.com/kb/248611.
-    int GetSocketDscp(void);
+	CLS_API_CPP(int) GetSocketDscp(void);
 
     /// Set Differentiated Services Code Point (DSCP) for socket object.
     ///  @param nDscp value of TOS setting which will be converted to DSCP
     ///  @return true if DSCP value was properly set
     /// <br><br> \b NOTE: Windows special notes http://support.microsoft.com/kb/248611.
-    bool SetSocketDscp(int nDscp);
+	CLS_API_CPP(bool) SetSocketDscp(int nDscp);
 
     /// Return socket descriptor
     ///  @return socket descriptor which is a signed 32 bit integer.
@@ -503,11 +520,11 @@ public:
 
     /// Disable the Nagle algorithm (Set TCP_NODELAY to true)
     /// @return false if failed to set socket option otherwise return true;
-    bool DisableNagleAlgoritm();
+	CLS_API_CPP(bool) DisableNagleAlgoritm();
 
     /// Enable the Nagle algorithm (Set TCP_NODELAY to false)
     /// @return false if failed to set socket option otherwise return true;
-    bool EnableNagleAlgoritm();
+	CLS_API_CPP(bool) EnableNagleAlgoritm();
 
 
 protected:

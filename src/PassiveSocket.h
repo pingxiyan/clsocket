@@ -52,9 +52,9 @@
 /// in a similar fashion.  The big difference is that the method
 /// CPassiveSocket::Accept should not be called on the latter two socket
 /// types.
-class CPassiveSocket : public CSimpleSocket {
+CLS_API_CLASS(class) CPassiveSocket : public CSimpleSocket {
 public:
-    CPassiveSocket(CSocketType type = SocketTypeTcp);
+	CLS_API_CLASS(CPassiveSocket)(CSocketType type = SocketTypeTcp);
     virtual ~CPassiveSocket() {
         Close();
     };
@@ -70,7 +70,7 @@ public:
     ///    CPassiveSocket::SocketEwouldblock, CPassiveSocket::SocketInvalidSocket,
     ///    CPassiveSocket::SocketConnectionAborted, CPassiveSocket::SocketInterrupted
     ///    CPassiveSocket::SocketProtocolError, CPassiveSocket::SocketFirewallError
-    virtual CActiveSocket *Accept(void);
+    virtual CLS_API_CPP(CActiveSocket*) Accept(void);
 
     /// Bind to a multicast group on  a specified interface, multicast group, and port
     ///
@@ -82,7 +82,7 @@ public:
     ///      condiitions will be set: CPassiveSocket::SocketAddressInUse, CPassiveSocket::SocketProtocolError,
     ///      CPassiveSocket::SocketInvalidSocket.  The following socket errors are for Linux/Unix
     ///      derived systems only: CPassiveSocket::SocketInvalidSocketBuffer
-    bool BindMulticast(const char *pInterface, const char *pGroup, uint16 nPort);
+	CLS_API_CPP(bool) BindMulticast(const char *pInterface, const char *pGroup, uint16 nPort);
 
     /// Create a listening socket at local ip address 'x.x.x.x' or 'localhost'
     /// if pAddr is NULL on port nPort.
@@ -95,7 +95,7 @@ public:
     ///      conditions will be set: CPassiveSocket::SocketAddressInUse, CPassiveSocket::SocketProtocolError,
     ///      CPassiveSocket::SocketInvalidSocket.  The following socket errors are for Linux/Unix
     ///      derived systems only: CPassiveSocket::SocketInvalidSocketBuffer
-    virtual bool Listen(const char *pAddr, uint16 nPort, int32 nConnectionBacklog = 30000);
+    virtual CLS_API_CPP(bool) Listen(const char *pAddr, uint16 nPort, int32 nConnectionBacklog = 30000);
 
     /// Attempts to send a block of data on an established connection.
     /// @param pBuf block of data to be sent.
@@ -109,7 +109,7 @@ public:
     /// CPassiveSocket::SocketProtocolError, CPassiveSocket::SocketNotconnected
     /// <br>\b Note: This function is used only for a socket of type
     /// CSimpleSocket::SocketTypeUdp
-    virtual int32 Send(const uint8 *pBuf, size_t bytesToSend);
+    virtual CLS_API_CPP(int32) Send(const uint8 *pBuf, size_t bytesToSend);
 
 private:
     struct ip_mreq  m_stMulticastRequest;   /// group address for multicast

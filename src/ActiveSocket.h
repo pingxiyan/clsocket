@@ -51,11 +51,11 @@ class CPassiveSocket;
 /// An active socket is used to create a socket which connects to a server.
 /// This type of object would be used when an application needs to send/receive
 /// data from a server.
-class CActiveSocket : public CSimpleSocket {
+CLS_API_CLASS(class) CActiveSocket : public CSimpleSocket {
 public:
     friend class CPassiveSocket;
 
-    CActiveSocket(CSocketType type = SocketTypeTcp);
+	CLS_API_CLASS(CActiveSocket)(CSocketType type = SocketTypeTcp);
     virtual ~CActiveSocket() {
         Close();
     };
@@ -68,7 +68,7 @@ public:
     ///  @param pAddr specifies the destination address to connect.
     ///  @param nPort specifies the destination port.
     ///  @return true if successful connection made, otherwise false.
-    virtual bool Open(const char *pAddr, uint16 nPort);
+	virtual CLS_API_CPP(bool) Open(const char *pAddr, uint16 nPort);
 
 private:
     /// Utility function used to create a TCP connection, called from Open().
