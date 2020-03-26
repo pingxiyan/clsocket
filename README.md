@@ -1,5 +1,5 @@
 # README
-Fork from: https://github.com/DFHack/clsocket, please refe it for details.
+Fork from: https://github.com/DFHack/clsocket, please refer it for details.
 It is not friendly to windows app. So I add some export marco for windows, and update CMakeLists.txt.
 
 
@@ -10,4 +10,5 @@ It is not friendly to windows app. So I add some export marco for windows, and u
 	$ cmake 
 
 # Refer unit test code.	
-	Pelease refer[https://github.com/DFHack/clsocket]
+
+Pelease [refer](https://github.com/DFHack/clsocket)
